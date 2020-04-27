@@ -14,13 +14,13 @@ Additional features could be plotting graphs of the database entries.
 
 ## Techstack Server
 
-..* python: Read picture
-..* python: analyze picture
-..* python: send db commands
-..* db: first - squlite, then - ?
+* python: Read picture
+* python: analyze picture
+* python: send db commands
+* db: first - squlite, then - ?
 
 ## Techsteck App and Website
 
-..* app:
-..* website:
+* app:
+* website:
 
