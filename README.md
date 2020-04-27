@@ -24,3 +24,6 @@ Additional features could be plotting graphs of the database entries.
 * app:
 * website:
 
+## TODOs
+
+* How will the data be safely transferred from the app/website to and from the server?
