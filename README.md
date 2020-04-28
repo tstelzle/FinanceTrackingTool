@@ -24,3 +24,15 @@ Additional features could be plotting graphs of the database entries.
 * app:
 * website:
 
+## Suggestions and Issues
+
+You can always open a new issue, if you have
+* a feature idea,
+* improventes for the app concept,
+* anything else. 
+
+In this way, it is possible to discuss your point with other developers of this tool.
+
+## TODOs
+
+* How will the data be safely transferred from the app/website to and from the server?
