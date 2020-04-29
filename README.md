@@ -40,7 +40,7 @@ Additional features could be plotting graphs of the database entries.
 
 You can always open a new issue, if you have
 * a feature idea,
-* improventes for the app concept,
+* improvments for the app concept,
 * anything else. 
 
 In this way, it is possible to discuss your point with other developers of this tool.
