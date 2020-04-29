@@ -6,11 +6,23 @@ The date, the store, the article and the price on the receipt should then be sto
 Further information like a category should also be added to the database entry.
 If the article is not known yet, there should be a request to add the additional information. 
 
+# Features App
+
 Later on there should be an app from which the photos of a receipt can be send to the server. 
 The app should also be able to list results from a query on the database.
 
+* make pictures
+* get basic data from database
+
+# Features Website
+
 In a next step there should be a web tool, which should have the same, if not more, features as the app.
 Additional features could be plotting graphs of the database entries.
+
+* plotting graphs
+* get data from database
+* link to products as same, which have a different name
+* ...
 
 ## Techstack Server
 
