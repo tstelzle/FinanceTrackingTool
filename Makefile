@@ -2,7 +2,7 @@
 # AUTHORS: Tarek Stelzle
 #          Richard Stewing
 
-ORIGIN := https://github.com/tstelzle/FinanceTrackingTool
+ORIGIN := $(shell git remote -v | grep push | cut -c 8- | rev | cut -c 8- | rev)
 BRANCH := $(shell (git branch) | cut -c 3-)
 DROP-STASH := git stash drop
 
@@ -11,10 +11,18 @@ DROP-STASH := git stash drop
 
 default:
 	@echo "Possible Targets:"
-	@echo "docker      - rebuilds docker image"
-	@echo "development - starts docker image with the current state in working directory"
-	@echo "production  - starts docker image with the current state of master"
-	@echo "clean       - output files from working directory"
+	@echo "\tdocker      - Rebuilds docker image"
+	@echo "\tdevelopment - Starts docker image with the current state in working directory"
+	@echo "\tproduction  - Starts docker image with the current state of master"
+	@echo "\tclean       - Output files from working directory"
+	@echo "\tpublish     - Commits all changed files to current branch ($(BRANCH)) and pushes it to origin ($(ORIGIN))"
+	@echo "Arguments:"
+	@echo "\tDROP-STASH  - Default: \"git stash drop\""
+	@echo "\t              Optional: Can be set to \"\" if the desired behavior is not delete the stash when reapplying it."
+	@echo "\t              Applies to Targets: \"production\""
+	@echo "\tMSG         - Default: \"\""
+	@echo "\t              Required: Commit Message when committing and pushing the current branch."
+	@echo "\t              Applies to Targets: \"publish\""
 
 docker: FinTrack/requirements.txt Dockerfile
 	docker build  -t python-environment .
@@ -33,9 +41,12 @@ production: docker
 	docker run -it -v $(PWD)/FinTrack/src:/usr/src --rm --name python_environment python-environment
 	git checkout $(BRANCH)
 	git stash apply
-	DROP-STASH
+	$(DROP-STASH)
 
 clean:
 	rm docker
 
 
+publish:
+	git commit -m "$(MSG)" -a
+	git push
