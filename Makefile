@@ -2,9 +2,12 @@
 # AUTHORS: Tarek Stelzle
 #          Richard Stewing
 
-ORIGIN = https://github.com/tstelzle/FinanceTrackingTool
+ORIGIN := https://github.com/tstelzle/FinanceTrackingTool
+BRANCH := $(shell (git branch) | cut -c 3-)
+DROP-STASH := git stash drop
 
-.PHONY: default
+# Targets that should be run each time they are requested
+.PHONY: default development clean docker-rm
 
 default:
 	@echo "Possible Targets:"
@@ -13,15 +16,25 @@ default:
 	@echo "production  - starts docker image with the current state of $(ORIGIN) master"
 	@echo "clean       - output files from working directory"
 
-docker: requirements.txt
-	docker build -t python-environment .
+docker: FinTrack/requirements.txt Dockerfile
+	docker build  -t python-environment .
+	touch docker
 
-dev: docker src/*/*.py
-	docker run -it --rm --name python_environment python-environment
+docker-rm:
+	docker container stop python_environment
+	docker rm python_environment
 
-# prod:
-# 	docker exec -it python_environment git clone https://github.com/tstelzle/FincanceTrackingTool /usr/src/prodi \
-#        	docker exec -it python_environment pyhton /usr/src/prod/main.py
+development: docker 
+	docker run -it -v $(PWD)/FinTrack/src:/usr/src --rm --name python_environment python-environment
+
+production:
+	git stash
+	git checkout master
+	docker run -it -v $(PWD)/FinTrack/src:/usr/src --rm --name python_environment python-environment
+	git checkout $(BRANCH)
+	git stash apply
+	DROP-STASH
 
 clean:
-	docker exec -it pyhton_environment rm -rf /usr/src/prod
+	rm docker
+
