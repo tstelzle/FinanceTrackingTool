@@ -13,7 +13,7 @@ default:
 	@echo "Possible Targets:"
 	@echo "docker      - rebuilds docker image"
 	@echo "development - starts docker image with the current state in working directory"
-	@echo "production  - starts docker image with the current state of $(ORIGIN) master"
+	@echo "production  - starts docker image with the current state of master"
 	@echo "clean       - output files from working directory"
 
 docker: FinTrack/requirements.txt Dockerfile
@@ -27,7 +27,7 @@ docker-rm:
 development: docker 
 	docker run -it -v $(PWD)/FinTrack/src:/usr/src --rm --name python_environment python-environment
 
-production:
+production: docker
 	git stash
 	git checkout master
 	docker run -it -v $(PWD)/FinTrack/src:/usr/src --rm --name python_environment python-environment
@@ -37,4 +37,5 @@ production:
 
 clean:
 	rm docker
+
 
