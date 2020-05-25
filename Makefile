@@ -14,11 +14,13 @@ START-COMMAND := /usr/local/bin/python main.py
 SHELL-IN-CONTAINER := /bin/bash
 
 # Targets that should be run each time they are requested
-.PHONY: default development clean docker-rm
+.PHONY: default docker-start docker-stop development-env production-env start-dev start-prod publish clean
 
 default:
 	@echo "Possible Targets:"
 	@echo "\tdocker          - Rebuilds docker image"
+	@echo "\tdocker-start    - Starts named ($(CONTAINER-NAME)) docker image"
+	@echo "\tdocker-stop     - Stops named ($(CONTAINER-NAME)) docker image"
 	@echo "\tdevelopment-env - Starts docker image with the current state in working directory"
 	@echo "\tproduction-env  - Starts docker image with the current state of master"
 	@echo "\tstart-dev       - Start docker image and FinTrack from the current working directoy"
@@ -47,13 +49,13 @@ docker: FinTrack/requirements.txt Dockerfile
 docker-stop:
 	docker container stop $(CONTAINER-NAME) | true
 
-start-docker: docker docker-stop
+docker-start: docker docker-stop
 	$(DOCKER-START-COMMAND)
 
-development-env: start-docker
+development-env: docker-start
 	docker exec -it $(CONTAINER-NAME) $(SHELL-IN-CONTAINER)
 
-start-dev: start-docker
+start-dev: docker-start
 	docker exec -it $(CONTAINER-NAME) $(START-COMMAND)
 
 production-env: docker docker-stop
