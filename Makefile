@@ -13,8 +13,18 @@ DOCKER-START-COMMAND := docker run $(DOCKER-FLAGS) $(MOUNTPOINT)  $(DOCKER-NAME)
 START-COMMAND := /usr/local/bin/python main.py
 SHELL-IN-CONTAINER := /bin/bash
 
+# Space separated list of version and build numbers that are known to work as expected
+SUPPORTED-DOCKER-VERSIONS := 19.03.8
+SUPPORTED-DOCKER-BUILDS   := afacb8b
+SUPPORTED-DOCKER-VERSION-STRINGS := $(foreach i,$(words $(SUPPORTED-DOCKER-VERSIONS)),\
+  "Docker version $(word $i,$(SUPPORTED-DOCKER-VERSIONS)), build $(word $i,$(SUPPORTED-DOCKER-BUILDS))")
+
+DOCKER-SUPPORT := $(if $(findstring $(shell docker --version),$(SUPPORTED-DOCKER-VERSION-STRINGS)),\
+  "Supported Docker version detected.",\
+  "Unkown Docker version detected.")
+
 # Targets that should be run each time they are requested
-.PHONY: default docker-start docker-stop development-env production-env start-dev start-prod publish clean
+.PHONY: default docker-start docker-stop development-env production-env start-dev start-prod publish clean check
 
 default:
 	@echo "Possible Targets:"
@@ -27,6 +37,7 @@ default:
 	@echo "  start-prod      - Start docker image and FinTrack from the current state of master"
 	@echo "  clean           - Output files from working directory"
 	@echo "  publish         - Commits all changed files to current branch ($(BRANCH)) and pushes it to origin ($(ORIGIN))"
+	@echo "  check           - Checks the installed docker version against known working versions"
 	@echo "Arguments:"
 	@echo "  DROP-STASH      - Default: \"git stash drop\""
 	@echo "                    Optional: Can be set to \"\" if the desired behavior is not delete the stash when reapplying it."
@@ -40,6 +51,9 @@ default:
 	@echo "  MOUNTPOINT      - Default: -v $(PWD)/FinTrack/src:/usr/src"
 	@echo "                    Optional: Selects what directory is exposed to the docker container."
 	@echo "                    Applies to Targets: \"production-env\", \"development-env\", \"start-dev\", \"start-prod\""
+
+check:
+	@echo $(DOCKER-SUPPORT)
 
 
 docker: FinTrack/requirements.txt Dockerfile
