@@ -56,6 +56,11 @@ default:
 	@echo "  IGNORE-OUTPUT   - Default: > /dev/null 2>&1"
 	@echo "                    Optional: Can be set to \"\" to enable output for all commands"
 	@echo "                    Applies to Targets: \"docker-stop\", \"production-env\", \"start-prod\""
+	@echo "  SEQ             - Default: seq"
+	@echo "                    Optional: Can be set to any other sequencing programm. Expects a number n as input an generates the sequence [1;n]."
+	@echo "                    Applies to Targets: \"check\""
+
+
 
 
 check:
