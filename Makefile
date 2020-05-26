@@ -13,11 +13,12 @@ DOCKER-START-COMMAND := docker run $(DOCKER-FLAGS) $(MOUNTPOINT)  $(DOCKER-NAME)
 START-COMMAND := /usr/local/bin/python main.py
 SHELL-IN-CONTAINER := /bin/bash
 IGNORE-OUTPUT := > /dev/null 2>&1
+SEQ := seq
 
 # Space separated list of version and build numbers that are known to work as expected
 SUPPORTED-DOCKER-VERSIONS := 19.03.8 19.03.8-ce
 SUPPORTED-DOCKER-BUILDS   := afacb8b afacb8b7f0
-SUPPORTED-DOCKER-VERSION-STRINGS := $(foreach i,$(words $(SUPPORTED-DOCKER-VERSIONS)),\
+SUPPORTED-DOCKER-VERSION-STRINGS = $(foreach i,$(shell $(SEQ) $(words $(SUPPORTED-DOCKER-VERSIONS))),\
   "Docker version $(word $i,$(SUPPORTED-DOCKER-VERSIONS)), build $(word $i,$(SUPPORTED-DOCKER-BUILDS))")
 
 DOCKER-SUPPORT := $(if $(findstring $(shell docker --version),$(SUPPORTED-DOCKER-VERSION-STRINGS)),\
@@ -52,6 +53,10 @@ default:
 	@echo "  MOUNTPOINT      - Default: -v $(PWD)/FinTrack/src:/usr/src"
 	@echo "                    Optional: Selects what directory is exposed to the docker container."
 	@echo "                    Applies to Targets: \"production-env\", \"development-env\", \"start-dev\", \"start-prod\""
+	@echo "  IGNORE-OUTPUT   - Default: > /dev/null 2>&1"
+	@echo "                    Optional: Can be set to \"\" to enable output for all commands"
+	@echo "                    Applies to Targets: \"docker-stop\", \"production-env\", \"start-prod\""
+
 
 check:
 	@echo $(DOCKER-SUPPORT)
@@ -83,6 +88,7 @@ production-env: docker docker-stop
 	@git checkout $(BRANCH) $(IGNORE-OUTPUT)
 	@git stash apply $(IGNORE-OUTPUT)
 	@$(DROP-STASH) $(IGNORE-OUTPUT)
+
 
 start-prod: docker docker-stop
 	@git stash $(IGNORE-OUTPUT)
