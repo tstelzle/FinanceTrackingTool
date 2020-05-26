@@ -14,8 +14,8 @@ START-COMMAND := /usr/local/bin/python main.py
 SHELL-IN-CONTAINER := /bin/bash
 
 # Space separated list of version and build numbers that are known to work as expected
-SUPPORTED-DOCKER-VERSIONS := 19.03.8
-SUPPORTED-DOCKER-BUILDS   := afacb8b
+SUPPORTED-DOCKER-VERSIONS := 19.03.8 19.03.8-ce
+SUPPORTED-DOCKER-BUILDS   := afacb8b afacb8b7f0
 SUPPORTED-DOCKER-VERSION-STRINGS := $(foreach i,$(words $(SUPPORTED-DOCKER-VERSIONS)),\
   "Docker version $(word $i,$(SUPPORTED-DOCKER-VERSIONS)), build $(word $i,$(SUPPORTED-DOCKER-BUILDS))")
 
