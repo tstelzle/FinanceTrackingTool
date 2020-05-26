@@ -56,9 +56,11 @@ check:
 	@echo $(DOCKER-SUPPORT)
 
 
-docker: FinTrack/requirements.txt Dockerfile
+.docker: FinTrack/requirements.txt Dockerfile
 	docker build  -t python-environment .
-	touch docker
+	touch .docker
+
+docker: .docker
 
 docker-stop:
 	docker container stop $(CONTAINER-NAME) | true
@@ -92,7 +94,7 @@ start-prod: docker docker-stop
 
 
 clean:
-	rm docker
+	rm .docker
 
 
 publish:
