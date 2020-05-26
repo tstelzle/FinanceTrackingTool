@@ -12,6 +12,7 @@ DOCKER-NAME := --name $(CONTAINER-NAME)
 DOCKER-START-COMMAND := docker run $(DOCKER-FLAGS) $(MOUNTPOINT)  $(DOCKER-NAME) python-environment
 START-COMMAND := /usr/local/bin/python main.py
 SHELL-IN-CONTAINER := /bin/bash
+IGNORE-OUTPUT := > /dev/null 2>&1
 
 # Space separated list of version and build numbers that are known to work as expected
 SUPPORTED-DOCKER-VERSIONS := 19.03.8 19.03.8-ce
@@ -63,7 +64,7 @@ check:
 docker: .docker
 
 docker-stop:
-	docker container stop $(CONTAINER-NAME) | true
+	@docker container stop $(CONTAINER-NAME) $(IGNORE-OUTPUT) | true
 
 docker-start: docker docker-stop
 	$(DOCKER-START-COMMAND)
@@ -75,22 +76,22 @@ start-dev: docker-start
 	docker exec -it $(CONTAINER-NAME) $(START-COMMAND)
 
 production-env: docker docker-stop
-	git stash
-	git checkout master
+	@git stash $(IGNORE-OUTPUT)
+	@git checkout $(IGNORE-OUTPUT)
 	$(DOCKER-START-COMMAND)
 	docker exec -it $(CONTAINER-NAME) $(SHELL-IN-CONTAINER)
-	git checkout $(BRANCH)
-	git stash apply
-	$(DROP-STASH)
+	@git checkout $(BRANCH) $(IGNORE-OUTPUT)
+	@git stash apply $(IGNORE-OUTPUT)
+	@$(DROP-STASH) $(IGNORE-OUTPUT)
 
 start-prod: docker docker-stop
-	git stash
-	git checkout master
+	@git stash $(IGNORE-OUTPUT)
+	@git checkout master $(IGNORE-OUTPUT)
 	$(DOCKER-START-COMMAND)
 	docker exec -it $(CONTAINER-NAME) $(START-COMMAND)
-	git checkout $(BRANCH)
-	git stash apply
-	$(DROP-STASH)
+	@git checkout $(BRANCH) $(IGNORE-OUTPUT)
+	@git stash apply $(IGNORE-OUTPUT)
+	@$(DROP-STASH) $(IGNORE-OUTPUT)
 
 
 clean:
