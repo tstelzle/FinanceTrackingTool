@@ -27,6 +27,7 @@ DOCKER-SUPPORT := $(if $(findstring $(shell docker --version),$(SUPPORTED-DOCKER
 
 # Targets that should be run each time they are requested
 .PHONY: default docker-start docker-stop development-env production-env start-dev start-prod publish clean check
+.PHONY: commit 
 
 default:
 	@echo "Possible Targets:"
@@ -38,6 +39,7 @@ default:
 	@echo "  start-dev       - Start docker image and FinTrack from the current working directoy"
 	@echo "  start-prod      - Start docker image and FinTrack from the current state of master"
 	@echo "  clean           - Output files from working directory"
+	@echo "  commit          - Commits all changed files to current branch ($(BRANCH))"
 	@echo "  publish         - Commits all changed files to current branch ($(BRANCH)) and pushes it to origin ($(ORIGIN))"
 	@echo "  check           - Checks the installed docker version against known working versions"
 	@echo "Arguments:"
@@ -46,7 +48,7 @@ default:
 	@echo "                    Applies to Targets: \"production\""
 	@echo "  MSG             - Default: \"\""
 	@echo "                    Required: Commit Message when committing and pushing the current branch."
-	@echo "                    Applies to Targets: \"publish\""
+	@echo "                    Applies to Targets: \"publish\", \"commit\""
 	@echo "  DOCKER-FLAGS    - Default: -d -t --rm"
 	@echo "                    Optional: Add or remove flags docker images are started with."
 	@echo "                    Applies to Targets: \"production-env\", \"development-env\", \"start-dev\", \"start-prod\""
@@ -108,7 +110,8 @@ start-prod: docker docker-stop
 clean:
 	rm .docker
 
-
-publish:
+commit: 
 	git commit -m "$(MSG)" -a
+
+publish: commit
 	git push
