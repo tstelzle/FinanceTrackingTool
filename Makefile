@@ -3,7 +3,7 @@
 #          Richard Stewing
 
 ORIGIN := $(shell git remote -v | grep push | cut -c 8- | rev | cut -c 8- | rev)
-BRANCH := $(shell (git branch) | cut -c 3-)
+BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 DROP-STASH := git stash drop
 CONTAINER-NAME := python_environment
 MOUNTPOINT := -v $(PWD)/FinTrack/src:/usr/src
@@ -87,7 +87,7 @@ start-dev: docker-start
 
 production-env: docker docker-stop
 	@git stash $(IGNORE-OUTPUT)
-	@git checkout $(IGNORE-OUTPUT)
+	@git checkout master $(IGNORE-OUTPUT)
 	$(DOCKER-START-COMMAND)
 	docker exec -it $(CONTAINER-NAME) $(SHELL-IN-CONTAINER)
 	@git checkout $(BRANCH) $(IGNORE-OUTPUT)
