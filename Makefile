@@ -2,6 +2,7 @@
 # AUTHORS: Tarek Stelzle
 #          Richard Stewing
 
+
 ORIGIN := $(shell git remote -v | grep push | cut -c 8- | rev | cut -c 8- | rev)
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 DROP-STASH := git stash drop
@@ -115,3 +116,4 @@ commit:
 
 publish: commit
 	git push
+
